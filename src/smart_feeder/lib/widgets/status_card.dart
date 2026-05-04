@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class StatusCard extends StatelessWidget {
@@ -5,7 +6,7 @@ class StatusCard extends StatelessWidget {
   final String value;
   final IconData icon;
   final Color color;
-  final double? progress;
+  final double? progress; // 0.0 to 1.0
 
   const StatusCard({
     super.key,
@@ -18,111 +19,95 @@ class StatusCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF1A1A1A),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: color.withValues(alpha: 0.2), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: color.withValues(alpha: 0.05),
-            blurRadius: 10,
-            spreadRadius: 2,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(24),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: const Color(0xFF121212).withValues(alpha: 0.7),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.05),
+              width: 1,
+            ),
           ),
-        ],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    title.toUpperCase(),
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white.withValues(alpha: 0.5),
+                      letterSpacing: 1.5,
+                    ),
+                  ),
+                  Icon(icon, size: 18, color: color.withValues(alpha: 0.8)),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              if (progress != null) ...[
+                const SizedBox(height: 16),
+                _buildProgressBar(progress!),
+              ],
+            ],
+          ),
+        ),
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
-        child: Stack(
+    );
+  }
+
+  Widget _buildProgressBar(double value) {
+    // Amber/Orange if below 10%
+    final barColor = value < 0.1 ? Colors.orangeAccent : const Color(0xFF00FF94);
+    
+    return Column(
+      children: [
+        Stack(
           children: [
-            // Background subtle glow
-            Positioned(
-              right: -20,
-              top: -20,
-              child: Icon(
-                icon,
-                size: 100,
-                color: color.withValues(alpha: 0.03),
+            Container(
+              height: 6,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.05),
+                borderRadius: BorderRadius.circular(3),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: color.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        child: Icon(icon, color: color, size: 24),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey[500],
-                      letterSpacing: 1.1,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      value,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  if (progress != null) ...[
-                    const SizedBox(height: 16),
-                    Stack(
-                      children: [
-                        Container(
-                          height: 8,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[900],
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        FractionallySizedBox(
-                          widthFactor: progress!,
-                          child: Container(
-                            height: 8,
-                            decoration: BoxDecoration(
-                              color: color,
-                              borderRadius: BorderRadius.circular(10),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: color.withValues(alpha: 0.4),
-                                  blurRadius: 6,
-                                  spreadRadius: 1,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+            FractionallySizedBox(
+              widthFactor: value.clamp(0.0, 1.0),
+              child: Container(
+                height: 6,
+                decoration: BoxDecoration(
+                  color: barColor,
+                  borderRadius: BorderRadius.circular(3),
+                  boxShadow: [
+                    BoxShadow(
+                      color: barColor.withValues(alpha: 0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 0),
                     ),
                   ],
-                ],
+                ),
               ),
             ),
           ],
         ),
-      ),
+      ],
     );
   }
 }

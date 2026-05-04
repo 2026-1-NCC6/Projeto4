@@ -1,5 +1,5 @@
 name: smart_feeder
-description: Smart pet feeder monitoring application.
+description: Smart pet feeder monitoring application for FECAP project.
 version: 1.0.0+1
 
 environment:
@@ -8,18 +8,22 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  firebase_core: ^4.6.0
-  cloud_firestore: ^6.2.0
-  firebase_auth: ^6.3.0
-  provider: ^6.0.5
-  fl_chart: ^1.2.0 # For visualization
-  intl: ^0.20.2
-  cupertino_icons: ^1.0.2
+  
+  # Firebase - Versões estáveis e compatíveis entre si
+  firebase_core: ^3.1.1
+  firebase_auth: ^5.1.4
+
+  # Comunicação IoT
+  mqtt_client: ^10.5.0
+
+  # Utilidades e UI
+  provider: ^6.1.2
+  cupertino_icons: ^1.0.8
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^6.0.0
+  flutter_lints: ^4.0.0
 
 flutter:
   uses-material-design: true

@@ -1,22 +1,23 @@
-import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:smart_feeder/models/feeder_data.dart';
-import 'package:smart_feeder/services/feeder_service.dart';
+import "dart:async";
+import "package:flutter/material.dart";
+import "package:smart_feeder/models/feeder_data.dart";
+import "package:smart_feeder/services/feeder_service.dart";
 
 class FeederViewModel extends ChangeNotifier {
   final FeederService _feederService;
   StreamSubscription? _subscription;
-  
+
   FeederData _currentData = FeederData(
+    waterLevel: 0,
+    waterStatus: "Iniciando...",
     foodLevel: 0,
-    bowlWeight: 0,
+    foodWeight: 0,
     lastPetDetected: "Carregando...",
     isOnline: false,
   );
 
   FeederData get currentData => _currentData;
 
-  // Injeção de dependência para facilitar a troca Mock -> Real (ESP32)
   FeederViewModel(this._feederService) {
     _init();
   }

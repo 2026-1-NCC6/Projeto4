@@ -12,6 +12,7 @@ class DashboardView extends StatelessWidget {
   Widget build(BuildContext context) {
     final viewModel = context.watch<FeederViewModel>();
     final data = viewModel.currentData;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
@@ -19,46 +20,107 @@ class DashboardView extends StatelessWidget {
         actions: [_buildStatusBadge(data.isOnline)],
       ),
       drawer: const AppDrawer(),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const _GreetingHeader(),
-            const SizedBox(height: 32),
-            StatusCard(
-              title: 'WATER LEVEL',
-              value: '${data.waterLevel.toStringAsFixed(1)}%',
-              icon: Icons.water_drop_outlined,
-              color: Colors.blueAccent,
-              progress: data.waterLevel / 100,
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: StatusCard(
-                    title: 'FOOD WEIGHT',
-                    value: '${data.foodWeight.toStringAsFixed(0)}g',
-                    icon: Icons.scale_outlined,
-                    color: AppTheme.cyberGreen,
-                  ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isWide = constraints.maxWidth > 800;
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(20.0),
+            child: Center(
+              child: Container(
+                constraints: BoxConstraints(maxWidth: isWide ? 1000 : 600),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const _GreetingHeader(),
+                    const SizedBox(height: 32),
+                    if (isWide)
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: Column(
+                              children: [
+                                StatusCard(
+                                  title: 'WATER LEVEL',
+                                  value: '${data.waterLevel.toStringAsFixed(1)}%',
+                                  icon: Icons.water_drop_outlined,
+                                  color: Colors.blueAccent,
+                                  progress: data.waterLevel / 100,
+                                ),
+                                const SizedBox(height: 16),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: StatusCard(
+                                        title: 'FOOD WEIGHT',
+                                        value: '${data.foodWeight.toStringAsFixed(0)}g',
+                                        icon: Icons.scale_outlined,
+                                        color: AppTheme.cyberGreen,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 16),
+                                    Expanded(
+                                      child: StatusCard(
+                                        title: 'LAST PET',
+                                        value: data.lastPetDetected.split(' ')[0],
+                                        icon: Icons.pets_outlined,
+                                        color: Colors.orangeAccent,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 32),
+                          Expanded(
+                            child: _QuickActionSection(viewModel: viewModel),
+                          ),
+                        ],
+                      )
+                    else
+                      Column(
+                        children: [
+                          StatusCard(
+                            title: 'WATER LEVEL',
+                            value: '${data.waterLevel.toStringAsFixed(1)}%',
+                            icon: Icons.water_drop_outlined,
+                            color: Colors.blueAccent,
+                            progress: data.waterLevel / 100,
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: StatusCard(
+                                  title: 'FOOD WEIGHT',
+                                  value: '${data.foodWeight.toStringAsFixed(0)}g',
+                                  icon: Icons.scale_outlined,
+                                  color: AppTheme.cyberGreen,
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: StatusCard(
+                                  title: 'LAST PET',
+                                  value: data.lastPetDetected.split(' ')[0],
+                                  icon: Icons.pets_outlined,
+                                  color: Colors.orangeAccent,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 40),
+                          _QuickActionSection(viewModel: viewModel),
+                        ],
+                      ),
+                  ],
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: StatusCard(
-                    title: 'LAST PET',
-                    value: data.lastPetDetected.split(' ')[0],
-                    icon: Icons.pets_outlined,
-                    color: Colors.orangeAccent,
-                  ),
-                ),
-              ],
+              ),
             ),
-            const SizedBox(height: 40),
-            _QuickActionSection(viewModel: viewModel),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -74,6 +136,7 @@ class DashboardView extends StatelessWidget {
         border: Border.all(color: color.withValues(alpha: 0.5), width: 1),
       ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             width: 8,
@@ -101,6 +164,7 @@ class _GreetingHeader extends StatelessWidget {
   const _GreetingHeader();
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -109,17 +173,17 @@ class _GreetingHeader extends StatelessWidget {
           style: TextStyle(
             fontSize: 12, 
             fontWeight: FontWeight.w600, 
-            color: Colors.white.withValues(alpha: 0.3),
+            color: isDark ? Colors.white.withValues(alpha: 0.3) : Colors.black.withValues(alpha: 0.3),
             letterSpacing: 2,
           ),
         ),
         const SizedBox(height: 4),
-        const Text(
+        Text(
           'Pet Overview', 
           style: TextStyle(
             fontSize: 32, 
             fontWeight: FontWeight.w900, 
-            color: Colors.white,
+            color: isDark ? Colors.white : Colors.black,
           ),
         ),
       ],
@@ -133,6 +197,8 @@ class _QuickActionSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -141,7 +207,7 @@ class _QuickActionSection extends StatelessWidget {
           style: TextStyle(
             fontSize: 14, 
             fontWeight: FontWeight.w600, 
-            color: Colors.white.withValues(alpha: 0.5),
+            color: isDark ? Colors.white.withValues(alpha: 0.5) : Colors.black.withValues(alpha: 0.5),
             letterSpacing: 1.5,
           ),
         ),

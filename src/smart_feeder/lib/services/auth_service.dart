@@ -34,4 +34,25 @@ class AuthService {
   Future<void> logout() async {
     await _auth.signOut();
   }
+
+  // Password Reset
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // Delete Account
+  Future<void> deleteAccount() async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        await user.delete();
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

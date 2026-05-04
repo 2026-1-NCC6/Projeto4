@@ -19,6 +19,10 @@ class StatusCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final surfaceColor = isDark ? const Color(0xFF121212) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black;
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(24),
       child: BackdropFilter(
@@ -26,12 +30,19 @@ class StatusCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: const Color(0xFF121212).withValues(alpha: 0.7),
+            color: surfaceColor.withValues(alpha: isDark ? 0.7 : 0.9),
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
-              color: Colors.white.withValues(alpha: 0.05),
+              color: textColor.withValues(alpha: 0.05),
               width: 1,
             ),
+            boxShadow: isDark ? [] : [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,7 +56,7 @@ class StatusCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: Colors.white.withValues(alpha: 0.5),
+                      color: textColor.withValues(alpha: 0.5),
                       letterSpacing: 1.5,
                     ),
                   ),
@@ -55,15 +66,15 @@ class StatusCard extends StatelessWidget {
               const SizedBox(height: 12),
               Text(
                 value,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: textColor,
                 ),
               ),
               if (progress != null) ...[
                 const SizedBox(height: 16),
-                _buildProgressBar(progress!),
+                _buildProgressBar(context, progress!),
               ],
             ],
           ),
@@ -72,7 +83,8 @@ class StatusCard extends StatelessWidget {
     );
   }
 
-  Widget _buildProgressBar(double value) {
+  Widget _buildProgressBar(BuildContext context, double value) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     // Amber/Orange if below 10%
     final barColor = value < 0.1 ? Colors.orangeAccent : const Color(0xFF00FF94);
     
@@ -84,7 +96,7 @@ class StatusCard extends StatelessWidget {
               height: 6,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.05),
+                color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(3),
               ),
             ),

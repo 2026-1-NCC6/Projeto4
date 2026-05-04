@@ -3,24 +3,20 @@ import 'package:provider/provider.dart';
 import 'package:smart_feeder/core/theme/app_theme.dart';
 import '../view_models/auth_view_model.dart';
 
-class RegisterView extends StatefulWidget {
-  const RegisterView({super.key});
+class ForgotPasswordView extends StatefulWidget {
+  const ForgotPasswordView({super.key});
 
   @override
-  State<RegisterView> createState() => _RegisterViewState();
+  State<ForgotPasswordView> createState() => _ForgotPasswordViewState();
 }
 
-class _RegisterViewState extends State<RegisterView> {
+class _ForgotPasswordViewState extends State<ForgotPasswordView> {
   final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
     _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -31,7 +27,7 @@ class _RegisterViewState extends State<RegisterView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('CREATE ACCOUNT'),
+        title: const Text('RESET PASSWORD'),
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_ios_new, 
@@ -53,23 +49,27 @@ class _RegisterViewState extends State<RegisterView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      const Icon(Icons.lock_reset, size: 80, color: AppTheme.cyberGreen),
+                      const SizedBox(height: 24),
                       Text(
-                        'JOIN THE SYSTEM',
+                        'FORGOT PASSWORD?',
+                        textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 28,
+                          fontSize: 24,
                           fontWeight: FontWeight.w900,
                           color: isDark ? Colors.white : Colors.black,
                           letterSpacing: 1,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 16),
                       Text(
-                        'START MONITORING YOUR PET TODAY',
+                        'ENTER YOUR EMAIL TO RECEIVE A RESET LINK',
+                        textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 11,
+                          fontSize: 12,
                           fontWeight: FontWeight.w600,
                           color: isDark ? Colors.white.withValues(alpha: 0.3) : Colors.black.withValues(alpha: 0.3),
-                          letterSpacing: 2,
+                          letterSpacing: 1.5,
                         ),
                       ),
                       const SizedBox(height: 48),
@@ -82,41 +82,12 @@ class _RegisterViewState extends State<RegisterView> {
                         ),
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
-                          if (value == null || value.isEmpty) return 'ENTER AN EMAIL';
+                          if (value == null || value.isEmpty) return 'ENTER YOUR EMAIL';
                           if (!value.contains('@')) return 'INVALID EMAIL FORMAT';
                           return null;
                         },
                       ),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: _passwordController,
-                        style: TextStyle(color: isDark ? Colors.white : Colors.black),
-                        decoration: const InputDecoration(
-                          labelText: 'PASSWORD',
-                          prefixIcon: Icon(Icons.lock_outline, size: 20),
-                        ),
-                        obscureText: true,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) return 'ENTER A PASSWORD';
-                          if (value.length < 6) return 'MINIMUM 6 CHARACTERS';
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: _confirmPasswordController,
-                        style: TextStyle(color: isDark ? Colors.white : Colors.black),
-                        decoration: const InputDecoration(
-                          labelText: 'CONFIRM PASSWORD',
-                          prefixIcon: Icon(Icons.shield_outlined, size: 20),
-                        ),
-                        obscureText: true,
-                        validator: (value) {
-                          if (value != _passwordController.text) return 'PASSWORDS DO NOT MATCH';
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 32),
                       if (authViewModel.errorMessage != null)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 24.0),
@@ -142,11 +113,19 @@ class _RegisterViewState extends State<RegisterView> {
                               ? null
                               : () async {
                                   if (_formKey.currentState!.validate()) {
-                                    final success = await authViewModel.register(
+                                    final success = await authViewModel.resetPassword(
                                       _emailController.text.trim(),
-                                      _passwordController.text.trim(),
                                     );
                                     if (success && mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          backgroundColor: AppTheme.cyberGreen,
+                                          content: Text(
+                                            'Reset link sent to your email',
+                                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      );
                                       Navigator.of(context).pop();
                                     }
                                   }
@@ -163,7 +142,7 @@ class _RegisterViewState extends State<RegisterView> {
                                   width: 20,
                                   child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black),
                                 )
-                              : const Text('REGISTER NOW', style: TextStyle(fontWeight: FontWeight.w900, letterSpacing: 1.5)),
+                              : const Text('SEND RESET LINK', style: TextStyle(fontWeight: FontWeight.w900, letterSpacing: 1.5)),
                         ),
                       ),
                     ],

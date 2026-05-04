@@ -59,6 +59,43 @@ class AuthViewModel extends ChangeNotifier {
     await _authService.logout();
   }
 
+  Future<bool> resetPassword(String email) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      await _authService.sendPasswordResetEmail(email);
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _isLoading = false;
+      _errorMessage = _getFirebaseErrorMessage(e);
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> deleteAccount() async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      await _authService.deleteAccount();
+      _isLoading = false;
+      _user = null;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _isLoading = false;
+      _errorMessage = _getFirebaseErrorMessage(e);
+      notifyListeners();
+      return false;
+    }
+  }
+
   String _getFirebaseErrorMessage(dynamic e) {
     if (e is FirebaseAuthException) {
       switch (e.code) {
@@ -72,8 +109,10 @@ class AuthViewModel extends ChangeNotifier {
           return 'Invalid email address.';
         case 'weak-password':
           return 'The password is too weak.';
+        case 'requires-recent-login':
+          return 'This action requires recent authentication. Please log in again.';
         default:
-          return 'Authentication error. Please try again.';
+          return 'Authentication error: ${e.message}';
       }
     }
     return 'An unexpected error occurred.';

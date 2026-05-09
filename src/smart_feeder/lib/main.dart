@@ -4,13 +4,15 @@ import 'package:firebase_core/firebase_core.dart'; // Adicionado
 import 'firebase_options.dart'; // O arquivo que você gerou agora pouco
 import 'package:smart_feeder/services/mqtt_feeder_service.dart';
 import 'package:smart_feeder/core/theme/app_theme.dart';
-import 'package:smart_feeder/services/feeder_service.dart';
 import 'package:smart_feeder/view_models/feeder_view_model.dart';
 import 'package:smart_feeder/view_models/auth_view_model.dart';
+import 'package:smart_feeder/view_models/network_config_view_model.dart';
 import 'package:smart_feeder/views/dashboard_view.dart';
 import 'package:smart_feeder/views/login_view.dart';
 
 import 'package:smart_feeder/view_models/theme_view_model.dart';
+
+import 'package:smart_feeder/services/pet_service.dart';
 
 void main() async {
   // 1. Ensure Flutter bindings are initialized
@@ -23,14 +25,16 @@ void main() async {
 
   // 3. Define the service (MqttFeederService for production, MockFeederService for testing)
   final feederService = MqttFeederService();
+  final petService = PetService();
 
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeViewModel()),
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
+        ChangeNotifierProvider(create: (_) => NetworkConfigViewModel()),
         ChangeNotifierProvider(
-          create: (_) => FeederViewModel(feederService),
+          create: (_) => FeederViewModel(feederService, petService),
         ),
       ],
       child: const SmartFeederApp(),

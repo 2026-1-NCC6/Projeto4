@@ -35,7 +35,7 @@ class SettingsView extends StatelessWidget {
                 children: [
                   _buildSectionHeader(context, 'APPEARANCE'),
                   SwitchListTile(
-                    activeColor: AppTheme.cyberGreen,
+                    activeThumbColor: AppTheme.cyberGreen,
                     title: const Text('Dark Mode', style: TextStyle(fontWeight: FontWeight.bold)),
                     subtitle: const Text('Toggle between dark and light themes', style: TextStyle(fontSize: 12)),
                     value: isDark,

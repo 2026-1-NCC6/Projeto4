@@ -1,7 +1,6 @@
 class FeederData {
   final double waterLevel;    // Valor 0-100%
   final String waterStatus;   // "AGUA_DETECTADA" ou "SECO"
-  final double foodLevel;     // Porcentagem de comida
   final double foodWeight;    // Peso em gramas
   final String lastPetDetected;
   final bool isOnline;
@@ -9,7 +8,6 @@ class FeederData {
   FeederData({
     required this.waterLevel,
     this.waterStatus = "Unknown",
-    required this.foodLevel,
     required this.foodWeight,
     required this.lastPetDetected,
     required this.isOnline,
@@ -23,9 +21,8 @@ class FeederData {
     return FeederData(
       waterLevel: normalizedWater.clamp(0.0, 100.0),
       waterStatus: map["waterStatus"] ?? "Unknown",
-      foodLevel: (map["foodLevel"] ?? 0.0).toDouble(),
       foodWeight: (map["foodWeight"] ?? 0.0).toDouble(),
-      lastPetDetected: map["lastPetDetected"] ?? "None",
+      lastPetDetected: map["lastTag"] ?? "None",
       isOnline: map["isOnline"] ?? true,
     );
   }

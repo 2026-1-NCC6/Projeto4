@@ -14,6 +14,13 @@ class DashboardView extends StatelessWidget {
     final data = viewModel.currentData;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    // Escuta por novas tags para cadastro
+    if (viewModel.pendingRfidTag != null && !viewModel.isRegistrationDialogOpen) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showRegisterPetDialog(context, viewModel);
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('SMART FEEDER'),
@@ -121,6 +128,56 @@ class DashboardView extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+
+  void _showRegisterPetDialog(BuildContext context, FeederViewModel viewModel) {
+    final tag = viewModel.pendingRfidTag;
+    if (tag == null) return;
+
+    final controller = TextEditingController();
+    viewModel.setRegistrationDialogOpen(true);
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text('NOVO PET DETECTADO!'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Tag RFID: $tag', style: const TextStyle(fontSize: 12, color: Colors.grey)),
+            const SizedBox(height: 16),
+            TextField(
+              controller: controller,
+              decoration: const InputDecoration(
+                labelText: 'Nome do Pet',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              viewModel.clearPendingTag();
+              viewModel.setRegistrationDialogOpen(false);
+              Navigator.pop(context);
+            },
+            child: const Text('CANCELAR'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (controller.text.isNotEmpty) {
+                await viewModel.registerPet(controller.text);
+                viewModel.setRegistrationDialogOpen(false);
+                if (context.mounted) Navigator.pop(context);
+              }
+            },
+            child: const Text('CADASTRAR'),
+          ),
+        ],
       ),
     );
   }
@@ -251,6 +308,40 @@ class _QuickActionSection extends StatelessWidget {
                 Text('FEED NOW', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, letterSpacing: 1.2)),
               ],
             ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        OutlinedButton(
+          onPressed: () async {
+            await viewModel.tareScale();
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Scale Tared Successfully'),
+                ),
+              );
+            }
+          },
+          style: OutlinedButton.styleFrom(
+            minimumSize: const Size(double.infinity, 56),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            side: BorderSide(color: isDark ? Colors.white24 : Colors.black26),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.scale_outlined, size: 20, color: isDark ? Colors.white70 : Colors.black54),
+              const SizedBox(width: 12),
+              Text(
+                'TARE SCALE', 
+                style: TextStyle(
+                  fontSize: 14, 
+                  fontWeight: FontWeight.w700, 
+                  letterSpacing: 1.1,
+                  color: isDark ? Colors.white70 : Colors.black54,
+                ),
+              ),
+            ],
           ),
         ),
       ],

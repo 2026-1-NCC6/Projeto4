@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_feeder/core/constants/app_constants.dart';
 import 'package:smart_feeder/core/theme/app_theme.dart';
+import 'package:smart_feeder/views/network_config_view.dart';
 import 'package:smart_feeder/views/settings_view.dart';
 import '../view_models/auth_view_model.dart';
 
@@ -39,6 +40,11 @@ class AppDrawer extends StatelessWidget {
           _buildDrawerItem(context, Icons.dashboard, 'Dashboard', true, () {
              Navigator.pop(context);
           }),
+          _buildDrawerItem(context, Icons.wifi, 'Network Setup', false, () {
+             Navigator.of(context).push(
+               MaterialPageRoute(builder: (context) => const NetworkConfigView()),
+             );
+          }),
           _buildDrawerItem(context, Icons.history, 'Feeding History', false, () {}),
           _buildDrawerItem(context, Icons.settings, 'Settings', false, () {
              Navigator.of(context).push(
@@ -57,7 +63,7 @@ class AppDrawer extends StatelessWidget {
 
   Widget _buildDrawerItem(BuildContext context, IconData icon, String title, bool selected, VoidCallback onTap) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final activeColor = AppTheme.cyberGreen;
+    const activeColor = AppTheme.cyberGreen;
     final inactiveColor = isDark ? Colors.grey : Colors.black54;
 
     return ListTile(

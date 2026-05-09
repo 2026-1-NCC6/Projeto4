@@ -5,7 +5,7 @@ class AppConstants {
   static const int mqttWsPort = 8083; // Standard WebSocket port
   
   // MQTT Topics
-  static const String topicWaterLevel = "smartfeeder/water_level";
+  static const String topicStatus = "smartfeeder/status";
   static const String topicCommand = "smartfeeder/command";
   
   // App Strings

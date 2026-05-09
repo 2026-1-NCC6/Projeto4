@@ -12,9 +12,11 @@ dependencies:
   # Firebase - Versões estáveis e compatíveis entre si
   firebase_core: ^3.1.1
   firebase_auth: ^5.1.4
+  cloud_firestore: ^5.0.2
 
   # Comunicação IoT
   mqtt_client: ^10.5.0
+  http: ^1.2.1
 
   # Utilidades e UI
   provider: ^6.1.2

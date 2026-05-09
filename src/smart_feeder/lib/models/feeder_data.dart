@@ -13,10 +13,24 @@ class FeederData {
     required this.isOnline,
   });
 
+  Map<String, dynamic> toMap() {
+    return {
+      'waterLevel': waterLevel,
+      'waterStatus': waterStatus,
+      'foodWeight': foodWeight,
+      'lastTag': lastPetDetected,
+      'isOnline': isOnline,
+    };
+  }
+
   factory FeederData.fromMap(Map<String, dynamic> map) {
     // Normalization: ESP sends 0-1023, we convert to 0-100%
+    // If we're loading from cache, it might already be normalized.
+    // Let's check if the raw value looks like it's already 0-100.
     double rawWater = (map["waterLevel"] ?? 0.0).toDouble();
-    double normalizedWater = (rawWater / 1023.0) * 100.0;
+    
+    // Simple heuristic: if it's > 100, it's probably raw from ESP
+    double normalizedWater = rawWater > 101 ? (rawWater / 1023.0) * 100.0 : rawWater;
 
     return FeederData(
       waterLevel: normalizedWater.clamp(0.0, 100.0),

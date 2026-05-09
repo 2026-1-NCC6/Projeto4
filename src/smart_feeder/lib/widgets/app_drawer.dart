@@ -4,6 +4,7 @@ import 'package:smart_feeder/core/constants/app_constants.dart';
 import 'package:smart_feeder/core/theme/app_theme.dart';
 import 'package:smart_feeder/views/network_config_view.dart';
 import 'package:smart_feeder/views/settings_view.dart';
+import 'package:smart_feeder/views/history_view.dart';
 import '../view_models/auth_view_model.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -45,7 +46,11 @@ class AppDrawer extends StatelessWidget {
                MaterialPageRoute(builder: (context) => const NetworkConfigView()),
              );
           }),
-          _buildDrawerItem(context, Icons.history, 'Feeding History', false, () {}),
+          _buildDrawerItem(context, Icons.history, 'Feeding History', false, () {
+             Navigator.of(context).push(
+               MaterialPageRoute(builder: (context) => const HistoryView()),
+             );
+          }),
           _buildDrawerItem(context, Icons.settings, 'Settings', false, () {
              Navigator.of(context).push(
                MaterialPageRoute(builder: (context) => const SettingsView()),

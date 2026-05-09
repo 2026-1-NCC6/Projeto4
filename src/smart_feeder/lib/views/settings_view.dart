@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_feeder/view_models/theme_view_model.dart';
 import 'package:smart_feeder/core/theme/app_theme.dart';
+import 'package:smart_feeder/utils/seeder.dart';
 import 'delete_account_view.dart';
 
 class SettingsView extends StatelessWidget {
@@ -57,6 +58,22 @@ class SettingsView extends StatelessWidget {
                     'Notifications',
                     'Configure alerts and sounds',
                     null,
+                  ),
+                  const SizedBox(height: 16),
+                  _buildSectionHeader(context, 'DEVELOPER'),
+                  _buildSettingsItem(
+                    context,
+                    Icons.data_array,
+                    'Seed Test Data',
+                    'Add mock pets and history to Firebase',
+                    () async {
+                      await DatabaseSeeder.seed();
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Database Seeded Successfully!')),
+                        );
+                      }
+                    },
                   ),
                   const SizedBox(height: 32),
                   _buildSectionHeader(context, 'DANGER ZONE'),

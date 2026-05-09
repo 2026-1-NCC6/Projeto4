@@ -19,7 +19,7 @@ class MockFeederService implements FeederService {
         waterLevel: 45.0,
         waterStatus: "WATER_DETECTED",
         foodWeight: _lastData.foodWeight + (timer.tick % 2 == 0 ? 5 : -5),
-        lastPetDetected: timer.tick % 3 == 0 ? "Luna (RFID: 67890)" : "Rex (RFID: 12345)",
+        lastPetDetected: timer.tick % 3 == 0 ? "None" : "Rex (RFID: 12345)",
         isOnline: true,
       );
       _controller.add(_lastData);
@@ -37,8 +37,5 @@ class MockFeederService implements FeederService {
   @override
   Future<void> tareScale() async {
     debugPrint("Service: Sending TARE command (MOCK)...");
-  }
-}
-RE command (MOCK)...");
   }
 }

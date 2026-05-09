@@ -22,7 +22,17 @@ class PetService {
       await _firestore.collection('pets').doc(pet.rfidTag).set(pet.toMap());
     } catch (e) {
       debugPrint("PetService: Error registering pet - $e");
-      rethrow; // Rethrow to let the UI know if needed
+      rethrow;
+    }
+  }
+
+  Future<List<Pet>> getAllPets() async {
+    try {
+      final snapshot = await _firestore.collection('pets').get();
+      return snapshot.docs.map((doc) => Pet.fromMap(doc.data())).toList();
+    } catch (e) {
+      debugPrint("PetService: Error getting all pets - $e");
+      return [];
     }
   }
 }

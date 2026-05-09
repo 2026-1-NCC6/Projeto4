@@ -1,40 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart'; // Adicionado
-import 'firebase_options.dart'; // O arquivo que você gerou agora pouco
+import 'package:firebase_core/firebase_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'firebase_options.dart';
 import 'package:smart_feeder/services/mqtt_feeder_service.dart';
+import 'package:smart_feeder/services/cache_service.dart';
+import 'package:smart_feeder/services/history_service.dart';
 import 'package:smart_feeder/core/theme/app_theme.dart';
 import 'package:smart_feeder/view_models/feeder_view_model.dart';
 import 'package:smart_feeder/view_models/auth_view_model.dart';
+import 'package:smart_feeder/view_models/history_view_model.dart';
 import 'package:smart_feeder/view_models/network_config_view_model.dart';
 import 'package:smart_feeder/views/dashboard_view.dart';
 import 'package:smart_feeder/views/login_view.dart';
-
 import 'package:smart_feeder/view_models/theme_view_model.dart';
-
 import 'package:smart_feeder/services/pet_service.dart';
 
 void main() async {
-  // 1. Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 2. Initialize Firebase with generated options
+  final prefs = await SharedPreferences.getInstance();
+  final cacheService = CacheService(prefs);
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // 3. Define the service (MqttFeederService for production, MockFeederService for testing)
   final feederService = MqttFeederService();
   final petService = PetService();
+  final historyService = HistoryService();
 
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ThemeViewModel()),
-        ChangeNotifierProvider(create: (_) => AuthViewModel()),
+        Provider.value(value: cacheService),
+        Provider.value(value: historyService),
+        ChangeNotifierProvider(create: (_) => ThemeViewModel(cacheService)),
+        ChangeNotifierProvider(create: (_) => AuthViewModel(cacheService)),
+        ChangeNotifierProvider(create: (_) => HistoryViewModel(historyService, petService)),
         ChangeNotifierProvider(create: (_) => NetworkConfigViewModel()),
         ChangeNotifierProvider(
-          create: (_) => FeederViewModel(feederService, petService),
+          create: (_) => FeederViewModel(feederService, petService, cacheService, historyService),
         ),
       ],
       child: const SmartFeederApp(),

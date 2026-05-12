@@ -68,7 +68,10 @@ Nosso projeto reflete que não buscamos apenas criar um produto, mas gerar valor
 
 ## 📋 Licença/License
 Este projeto está licenciado sob a licença CC BY 4.0.
-Você pode criar a sua própria licença Creative Commons em: https://chooser-beta.creativecommons.org/
+
+PetButler © 2026 por Satiro Gabriel, Sabrinna Cristina, Maria Kassandra e Leonardo Ferreira está licenciado sob CC BY 4.0.
+
+
 
 ## 🎓 Referências
 

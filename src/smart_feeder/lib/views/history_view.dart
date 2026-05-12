@@ -221,7 +221,7 @@ class HistoryView extends StatelessWidget {
         final barHeight = maxAmount > 0 ? (amount / maxAmount) * chartHeight : 0.0;
         return Column(
           children: [
-            Text('${amount.toStringAsFixed(0)}', style: const TextStyle(fontSize: 9, color: Colors.grey)),
+            Text(amount.toStringAsFixed(0), style: const TextStyle(fontSize: 9, color: Colors.grey)),
             const SizedBox(height: 4),
             Container(
               width: 20,

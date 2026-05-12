@@ -160,7 +160,7 @@ class _NetworkConfigViewState extends State<NetworkConfigView> {
           color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.1),
         ),
       ),
-      child: Column(
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
@@ -172,18 +172,18 @@ class _NetworkConfigViewState extends State<NetworkConfigView> {
               letterSpacing: 1.5,
             ),
           ),
-          const SizedBox(height: 8),
-          const Text(
+          SizedBox(height: 8),
+          Text(
             '1. Connect your phone to the "SmartFeeder_Setup" Wi-Fi network.',
             style: TextStyle(fontSize: 12),
           ),
-          const SizedBox(height: 4),
-          const Text(
+          SizedBox(height: 4),
+          Text(
             '2. Enter your home Wi-Fi details below.',
             style: TextStyle(fontSize: 12),
           ),
-          const SizedBox(height: 4),
-          const Text(
+          SizedBox(height: 4),
+          Text(
             '3. Press "SEND CONFIGURATION" to update the device.',
             style: TextStyle(fontSize: 12),
           ),

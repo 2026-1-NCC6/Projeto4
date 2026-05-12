@@ -1,0 +1,10 @@
+import 'dart:async';
+import 'package:smart_feeder/models/feeder_data.dart';
+
+/// Interface abstrata do serviço do alimentador.
+/// Permite trocar a implementação mock pela real (MQTT) no futuro.
+abstract class FeederService {
+  Stream<FeederData> get feederDataStream;
+  Future<void> triggerManualFeeding();
+  Future<void> tareScale();
+}

@@ -75,4 +75,10 @@ PetButler © 2026 por Satiro Gabriel, Sabrinna Cristina, Maria Kassandra e Leona
 
 ## 🎓 Referências
 
-Aqui estão as referências usadas no projeto:
+Aqui estão as referências usadas no projeto: 
+
+
+- ABINPET. *Projeções e dados do mercado pet brasileiro*. 2024.
+- ABRAS. *Overview do mercado e tendências de consumo pet*.
+- KOIN. *Pesquisa sobre gastos e comportamento de tutores de pet*.
+- GOV. *Projeção do setor pet*. 2025.
